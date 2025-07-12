@@ -1,0 +1,52 @@
+{
+  "name": "file-operation-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "format": "prettier --write .",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "mcp",
+    "typescript",
+    "file",
+    "file-operation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:lxKylin/file-operation-mcp"
+  },
+  "author": "lxKylin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lxKylin/file-operation-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.1",
+    "zod": "^4.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@rslib/core": "^0.10.5",
+    "@types/node": "^22.16.0",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1"
+  }
+}
