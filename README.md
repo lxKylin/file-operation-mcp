@@ -48,7 +48,89 @@ pnpm install
 pnpm build
 ```
 
-## ⚙️ 配置
+## 🔌 传输方式对比
+
+本项目支持两种MCP传输方式，您可以根据使用场景选择合适的方式：
+
+### 📊 Stdio vs SSE 对比表
+
+| 特性 | Stdio | SSE |
+|------|-------|-----|
+| **传输协议** | 进程间通信 (IPC) | HTTP/HTTPS |
+| **连接方式** | stdin/stdout | Server-Sent Events |
+| **多客户端支持** | ❌ 1对1连接 | ✅ 多对1连接 |
+| **远程访问** | ❌ 仅本地 | ✅ 支持远程 |
+| **部署复杂度** | ✅ 简单 | ❌ 需要HTTP服务器 |
+| **资源占用** | ✅ 低 | ❌ 相对高 |
+| **调试便利性** | ❌ 困难 | ✅ 容易（HTTP工具） |
+| **网络穿透** | ❌ 不支持 | ✅ 支持 |
+| **负载均衡** | ❌ 不支持 | ✅ 支持 |
+| **监控能力** | ❌ 有限 | ✅ 丰富（健康检查等） |
+| **延迟** | ✅ 极低 (~1-5ms) | ❌ 略高 (~10-50ms) |
+
+### 🎯 使用场景推荐
+
+#### 选择 Stdio 当您需要：
+- 🏠 **本地开发**: 简单的个人桌面工具
+- 🔒 **单用户**: 仅自己使用的应用
+- ⚡ **低延迟**: 对响应时间要求极高
+- 📦 **简单部署**: 不想配置HTTP服务器
+- 💾 **资源节约**: 系统资源有限
+
+#### 选择 SSE 当您需要：
+- 🌐 **远程访问**: 通过网络连接服务器
+- 👥 **多用户**: 团队共享的服务器
+- 🔄 **高可用性**: 需要负载均衡和故障转移
+- 🐛 **便于调试**: 开发阶段需要方便的调试工具
+- 📈 **可扩展性**: 未来可能需要横向扩展
+- 🔍 **监控需求**: 需要详细的服务监控
+
+### 🔧 性能对比
+
+#### Stdio 架构
+```
+客户端 ←→ 服务器进程 (直接IPC)
+延迟: 1-5ms | 内存: 低 | CPU: 低
+```
+
+#### SSE 架构  
+```
+客户端 ←→ HTTP服务器 ←→ MCP服务器
+延迟: 10-50ms | 内存: 中等 | CPU: 中等
+```
+
+### 🛠️ 代码差异示例
+
+#### Stdio 启动方式
+```typescript
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
+console.error('Stdio MCP服务器已启动');
+```
+
+#### SSE 启动方式
+```typescript
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import express from 'express';
+
+const app = express();
+app.get('/sse', async (req, res) => {
+  const transport = new SSEServerTransport('/messages', res);
+  await server.connect(transport);
+});
+
+app.listen(3000, () => {
+  console.error('SSE MCP服务器已启动在端口 3000');
+});
+```
+
+> 💡 **推荐**: 如果您是个人用户且只需要本地使用，选择 **Stdio**；如果需要团队协作或远程访问，选择 **SSE**。
+
+---
+
+## ⚙️ Stdio配置
 
 ### Claude Desktop 配置
 
@@ -88,6 +170,75 @@ pnpm build
   }
 }
 ```
+
+## ⚙️ SSE配置
+
+### 启动SSE服务器
+
+首先启动HTTP服务器：
+
+```bash
+# 启动服务器
+pnpm start
+# 或
+node dist/index.js
+```
+
+服务器启动后会显示：
+```
+MCP文件操作服务器已启动在端口 3000
+SSE端点: http://localhost:3000/sse
+健康检查: http://localhost:3000/health
+```
+
+### 验证服务器状态
+
+```bash
+# 检查服务器健康状态
+curl http://localhost:3000/health
+
+# 返回示例
+{
+  "status": "ok",
+  "message": "MCP文件操作服务器运行中",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+### Claude Desktop 配置
+
+将以下配置添加到 Claude Desktop 的配置文件中：
+
+```json
+{
+  "mcpServers": {
+    "file-operation-mcp": {
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+### Cursor IDE 配置
+
+```json
+{
+  "mcpServers": {
+    "file-operation-mcp": {
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+### SSE端点说明
+
+- **SSE连接**: `http://localhost:3000/sse` - 主要的MCP连接端点
+- **消息处理**: `http://localhost:3000/messages` - 处理JSON-RPC消息
+- **健康检查**: `http://localhost:3000/health` - 服务器状态检查
+- **端口配置**: 可通过环境变量 `PORT` 修改，默认为 3000
+
+> ⚠️ **注意**: SSE模式需要先手动启动服务器，然后再配置客户端连接。
 
 ## 🚀 使用方法
 
