@@ -291,7 +291,7 @@ async function main() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error('MCP文件操作服务器已启动...');
+    console.log('MCP文件操作服务器已启动...');
   } catch (error) {
     console.error('启动服务器时发生错误:', error);
     process.exit(1);
