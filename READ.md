@@ -1298,3 +1298,12 @@ Issues and pull requests are welcome on GitHub at <https://github.com/modelconte
 ## License
 
 This project is licensed under the MIT License—see the [LICENSE](LICENSE) file for details.
+
+打造一个 MCP 服务器，它能够：
+- 功能：
+  - 可以根据给出的文件夹路径统计该文件夹中的文件数量（默认统计当前桌面上的文件，可以假设我的桌面路径为 /Users/{username}/Desktop）
+  - 获取对应文件的名称
+  - 支持压缩图片
+
+要求：
+- 不需要给出 prompt 和 resource 相关代码。

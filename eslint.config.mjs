@@ -7,4 +7,9 @@ export default [
   js.configs.recommended,
   ...ts.configs.recommended,
   { ignores: ['dist/'] },
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': ['off', {}] //允许使用any
+    }
+  }
 ];
