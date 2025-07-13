@@ -9,7 +9,10 @@
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+
+    "baseUrl": ".", //查询的基础路径
+    "paths": { "@/*": ["src/*"] } //路径映射,配合别名使用
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
