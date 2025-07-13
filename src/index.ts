@@ -6,20 +6,19 @@ import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import * as os from 'os';
 import express from 'express';
 
+import registryTools from './tools';
+
+// 获取用户名
+export const username: string = os.userInfo().username;
+
 // 创建MCP服务器
-export const server = new McpServer({
+const server = new McpServer({
   name: 'file-operation-server',
   version: '1.0.0'
 });
 
-// 获取用户名
-export const username = os.userInfo().username;
-
-// 工具1：统计文件夹中的文件数量
-
-// 工具2：获取文件名称列表
-
-// 工具3：压缩图片
+// 注册工具
+registryTools(server);
 
 // 启动
 async function main() {
