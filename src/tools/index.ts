@@ -7,6 +7,9 @@ import createArchive from './create-archive';
 import extractArchive from './extract-archive';
 import copyFiles from './copy-files';
 import moveFiles from './move-files';
+import mergePdf from './merge-pdf';
+import splitPdf from './split-pdf';
+import pdfToImage from './pdf-to-image';
 
 export default function registryTools(server: McpServer) {
   [
@@ -16,7 +19,10 @@ export default function registryTools(server: McpServer) {
     createArchive,
     extractArchive,
     copyFiles,
-    moveFiles
+    moveFiles,
+    mergePdf,
+    splitPdf,
+    pdfToImage
   ].forEach((registryFn) => {
     registryFn(server);
   });
