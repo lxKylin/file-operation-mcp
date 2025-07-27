@@ -11,6 +11,8 @@
 - 📊 **文件统计** - 统计指定文件夹中的文件数量
 - 📋 **文件列表** - 获取文件夹中所有文件的详细信息
 - 🖼️ **图片压缩** - 高质量图片压缩，支持多种格式
+- 🗜️ **文件压缩** - 创建ZIP、TAR、TAR.GZ格式的压缩文件
+- 📦 **文件解压** - 解压ZIP、TAR、TAR.GZ格式的压缩文件
 - 🔒 **安全可靠** - 完整的错误处理和参数验证
 - ⚡ **高性能** - 基于 Node.js 和 TypeScript 构建
 
@@ -19,6 +21,9 @@
 - **TypeScript** - 类型安全的 JavaScript
 - **MCP SDK** - Model Context Protocol 官方 SDK
 - **Sharp** - 高性能图像处理库
+- **Archiver** - 文件压缩库，支持ZIP、TAR等格式
+- **Extract-Zip** - ZIP文件解压库
+- **TAR** - TAR格式文件处理库
 - **fs-extra** - 增强的文件系统操作
 - **Zod** - TypeScript 优先的数据验证
 
@@ -301,6 +306,63 @@ curl http://localhost:3000/health
 请压缩图片 /path/to/image.png，限制最大宽度为 1920 像素
 ```
 
+### 4. 文件压缩 (create-archive)
+
+将文件或文件夹压缩为ZIP、TAR或TAR.GZ格式。
+
+**参数：**
+- `files`: 要压缩的文件/文件夹路径数组 (必需)
+- `outputPath`: 输出压缩文件路径 (必需)
+- `format` (可选): 压缩格式 (zip, tar, tar.gz)，默认为zip
+- `compressionLevel` (可选): 压缩级别 (0-9)，默认为6
+
+**支持格式：**
+- **ZIP** - 通用压缩格式，兼容性最好
+- **TAR** - Unix/Linux常用格式，无压缩
+- **TAR.GZ** - TAR格式+GZIP压缩，压缩率高
+
+**示例：**
+```
+请将 /Users/username/Documents 文件夹压缩为ZIP格式
+```
+```
+请压缩文件 ["/path/file1.txt", "/path/file2.txt"] 为 /backup/files.tar.gz 格式
+```
+```
+请将项目文件夹压缩为高压缩级别的ZIP包
+```
+
+### 5. 文件解压 (extract-archive)
+
+解压ZIP、TAR或TAR.GZ文件到指定目录。
+
+**参数：**
+- `archivePath`: 压缩文件路径 (必需)
+- `extractTo`: 解压目标目录 (必需)
+- `overwrite` (可选): 是否覆盖已存在文件，默认为false
+
+**支持格式：**
+- **ZIP** - .zip文件
+- **TAR** - .tar文件
+- **TAR.GZ** - .tar.gz、.tgz文件
+
+**示例：**
+```
+请解压 /Downloads/archive.zip 到 /Projects/ 目录
+```
+```
+请解压 /backup/files.tar.gz 到 /restore/ 并覆盖现有文件
+```
+```
+请将压缩包解压到临时文件夹
+```
+
+**注意事项：**
+- 解压前会检查目标目录是否为空（除非设置overwrite=true）
+- 支持自动检测压缩格式
+- 会显示解压文件数量和总大小
+- 解压过程中会保持原始文件结构
+
 ## 📸 功能演示
 
 ### 文件列表查询
@@ -353,8 +415,10 @@ pnpm start
    - macOS/Linux: `/Users/username/path`
    - Windows: `C:\Users\username\path`
 3. **图片格式**: 仅支持常见的图片格式 (JPEG, PNG, WebP, TIFF, GIF)
-4. **文件大小**: 大文件处理可能需要更长时间
-5. **调试输出**: 使用 `console.error()` 而非 `console.log()` 避免干扰 MCP 协议
+4. **压缩格式**: 支持ZIP、TAR、TAR.GZ格式的压缩和解压
+5. **文件权限**: 确保对目标目录有读写权限
+6. **文件大小**: 大文件处理可能需要更长时间
+7. **调试输出**: 使用 `console.error()` 而非 `console.log()` 避免干扰 MCP 协议
 
 ## 🐛 故障排除
 
@@ -383,6 +447,27 @@ Error: EACCES: permission denied
 错误：不支持的图片格式 .xxx
 ```
 **解决方案**: 使用支持的图片格式 (jpg, png, webp, tiff, gif)
+
+**5. 压缩文件创建失败**
+```
+错误：创建压缩文件时发生错误
+```
+**解决方案**: 
+- 检查文件路径是否正确
+- 确保对输出目录有写入权限
+- 检查磁盘空间是否充足
+
+**6. 解压文件失败**
+```
+错误：目标目录不为空
+```
+**解决方案**: 设置 `overwrite=true` 或清空目标目录
+
+**7. 不支持的压缩格式**
+```
+错误：不支持的压缩格式
+```
+**解决方案**: 使用支持的格式 (.zip, .tar, .tar.gz, .tgz)
 
 ### 调试技巧
 

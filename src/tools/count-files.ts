@@ -2,7 +2,10 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import fs from 'fs-extra';
 
-import { username } from '@/index';
+import * as os from 'os';
+
+// 获取用户名
+export const username: string = os.userInfo().username;
 
 /**
  * 工具1：统计文件夹中的文件数量

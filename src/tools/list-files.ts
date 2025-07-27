@@ -3,7 +3,10 @@ import { z } from 'zod';
 import fs from 'fs-extra';
 import * as path from 'path';
 
-import { username } from '@/index';
+import * as os from 'os';
+
+// 获取用户名
+export const username: string = os.userInfo().username;
 
 /**
  * 工具2：获取文件名称列表
